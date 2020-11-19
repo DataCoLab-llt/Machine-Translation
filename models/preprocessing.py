@@ -3,6 +3,15 @@ import re
 import io
 
 
+def is_english(s):
+    try:
+        s.encode(encoding='utf-8').decode('ascii')
+    except UnicodeDecodeError:
+        return False
+    else:
+        return True
+
+
 def unicode_to_ascii(s):
     return ''.join(c for c in unicodedata.normalize('NFD', s)
                    if unicodedata.category(c) != 'Mn')
@@ -13,7 +22,10 @@ def preprocess_sentence(w):
     w = re.sub(r"([?.!,¿])", r" \1 ", w)
     w = re.sub(r'[" "]+', " ", w)
     w = w.strip()
-    w = '<start> ' + w + ' <end>'
+    if is_english(w):
+        w = '<start> ' + w + ' <end>'
+    else:
+        w = '<end> ' + w + ' <start>'
     return w
 
 
