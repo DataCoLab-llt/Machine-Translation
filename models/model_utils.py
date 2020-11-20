@@ -1,30 +1,8 @@
-from abc import ABC
-
 import tensorflow as tf
 from preprocessing import create_dataset
 from sklearn.model_selection import train_test_split
 
 path_to_file = '/media/moslem/Private/Project/MTP/Machine-Translation/dataset/manythings/pes.txt'
-
-
-class Encoder(tf.keras.Model):
-    def __init__(self, vocab_size, embedding_dim, enc_units, batch_sz):
-        super(Encoder, self).__init__()
-        self.batch_sz = batch_sz
-        self.enc_units = enc_units
-        self.embedding = tf.keras.layers.Embedding(vocab_size, embedding_dim)
-        self.gru = tf.keras.layers.GRU(self.enc_units,
-                                       return_sequences=True,
-                                       return_state=True,
-                                       recurrent_initializer='glorot_uniform')
-
-    def call(self, x, hidden):
-        x = self.embedding(x)
-        output, state = self.gru(x, initial_state=hidden)
-        return output, state
-
-    def initialize_hidden_state(self):
-        return tf.zeros((self.batch_sz, self.enc_units))
 
 
 def tokenize(lang):
@@ -59,21 +37,14 @@ def create_tf_dataset(input_tensor_train, target_tensor_train):
 def main_proccess():
     num_examples = 30000
     input_tensor, target_tensor, inp_lang_tokenizer, targ_lang_tokenizer = load_dataset(path_to_file, num_examples)
-    print(input_tensor.shape[0])
-    print(target_tensor.shape[0])
     # Split arrays or matrices into random train and test subsets
     input_tensor_train, input_tensor_val, target_tensor_train, target_tensor_val = train_test_split(input_tensor,
                                                                                                     target_tensor,
                                                                                                     test_size=0.2)
-    # print("Input Language; index to word mapping")
-    # convert(inp_lang_tokenizer, input_tensor_train[0])
-    # print("Target Language; index to word mapping")
-    # convert(targ_lang_tokenizer, target_tensor_train[0])
-    tf_dataset = create_tf_dataset(input_tensor_train, target_tensor_train)
-    example_input_batch, example_target_batch = next(iter(tf_dataset))
-    print(example_input_batch.shape, example_target_batch.shape)
+    print("Input Language; index to word mapping")
+    convert(inp_lang_tokenizer, input_tensor_train[0])
+    print("Target Language; index to word mapping")
+    convert(targ_lang_tokenizer, target_tensor_train[0])
 
 
-
-
-test_index_to_word_maping()
+main_proccess()
