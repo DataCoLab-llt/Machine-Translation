@@ -3,33 +3,62 @@ import re
 import io
 
 
-def is_english(s):
+def is_english(S):
+    """
+    Recognizes whether the input language of the sentence is English or not.
+    Args:
+        S (string): input sentence
+    Returns:
+        Boolean
+    """
     try:
-        s.encode(encoding='utf-8').decode('ascii')
+        S.encode(encoding='utf-8').decode('ascii')
     except UnicodeDecodeError:
         return False
     else:
         return True
 
 
-def unicode_to_ascii(s):
-    return ''.join(c for c in unicodedata.normalize('NFD', s)
-                   if unicodedata.category(c) != 'Mn')
+def unicode_to_ascii(S):
+    """
+    Convert unicode character to Ascii.
+    Args:
+        S (string): input sentence
+    Returns:
+        sentence (string): converted sentence to ascii
+    """
+    sentence = ''.join(c for c in unicodedata.normalize('NFD', S) if unicodedata.category(c) != 'Mn')
+    return sentence
 
 
-def preprocess_sentence(w):
-    w = unicode_to_ascii(w.lower().strip())
-    w = re.sub(r"([?.!,¿])", r" \1 ", w)
-    w = re.sub(r'[" "]+', " ", w)
-    w = w.strip()
-    if is_english(w):
-        w = '<start> ' + w + ' <end>'
+def preprocess_sentence(sentence):
+    """
+    Some preprocessing on sentence.
+    Args:
+        sentence (string): input sentence
+    Returns:
+        sentence (string) preprocessed sentence
+    """
+    sentence = unicode_to_ascii(sentence.lower().strip())
+    sentence = re.sub(r"([?.!,¿])", r" \1 ", sentence)
+    sentence = re.sub(r'[" "]+', " ", sentence)
+    sentence = sentence.strip()
+    if is_english(sentence):
+        sentence = '<start> ' + sentence + ' <end>'
     else:
-        w = '<end> ' + w + ' <start>'
-    return w
+        sentence = '<end> ' + sentence + ' <start>'
+    return sentence
 
 
 def create_dataset(path, num_examples):
+    """
+    Some work on dataset and prepare cleaned dataset.
+    Args:
+        path (string): path to file - dataset file
+        num_examples (int): number of word pairs required
+    Returns:
+        list of word pairs
+    """
     clean_lines = list()
     lines = io.open(path, encoding='UTF-8').read().strip().split('\n')
     for i in lines:
