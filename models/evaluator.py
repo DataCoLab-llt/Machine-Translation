@@ -7,7 +7,7 @@ def bleu_evaluation(prediction, truth, verbose=False):
     Args:
         prediction (string): translated sentence
         truth (list): list of reference sentences
-        verbose (boolean): to print or not to print BLEU scores
+        verbose (boolean): to print or not to print truth and prediction sentences.
     Returns:
         nothings for now, just print BLEU scores
     Example:
@@ -15,16 +15,16 @@ def bleu_evaluation(prediction, truth, verbose=False):
         candidate = 'i love cat'
         bleu_evaluation(candidate, truth)
     """
-    print('translations=[%s], references=%s' % (prediction, truth))
+    if verbose:
+        print('prediction=[%s], truth=%s' % (prediction, truth))
     prediction_token = prediction.split()
     truth_token = list()
     for sen in prediction:
         truth_token.append(sen[0].split())
 
-    if verbose:
-        print('BLEU, Individual 1-gram: %f' % sentence_bleu(truth_token, prediction_token, weights=(1, 0, 0, 0)))
-        print('BLEU, Individual 2-gram: %f' % sentence_bleu(truth_token, prediction_token, weights=(0, 1, 0, 0)))
-        print('BLEU, Individual 3-gram: %f' % sentence_bleu(truth_token, prediction_token, weights=(0, 0, 1, 0)))
-        print('BLEU, Individual 4-gram: %f' % sentence_bleu(truth_token, prediction_token, weights=(0, 0, 0, 1)))
+    print('BLEU, Individual 1-gram: %f' % sentence_bleu(truth_token, prediction_token, weights=(1, 0, 0, 0)))
+    print('BLEU, Individual 2-gram: %f' % sentence_bleu(truth_token, prediction_token, weights=(0, 1, 0, 0)))
+    print('BLEU, Individual 3-gram: %f' % sentence_bleu(truth_token, prediction_token, weights=(0, 0, 1, 0)))
+    print('BLEU, Individual 4-gram: %f' % sentence_bleu(truth_token, prediction_token, weights=(0, 0, 0, 1)))
 
 
